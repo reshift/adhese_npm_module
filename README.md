@@ -18,7 +18,7 @@ export async function getServerSideProps() {
   // create a configuration object that contains your Adhese account id
   let adheseConfig = {
     account: 'demo',
-    cacheUrl: 'https://my_prebid_cache_server.net/cache',
+    cacheUrl: 'https://my_prebid_cache.net/cache',
     slot: 'example_video_slot'
   };
   
@@ -38,11 +38,11 @@ Adhese returns an object with three parameters, that looks like this:
 {
   "hb_pb_cat_dur": "12.00_30s",
   "hb_cache": "3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16",
-  "vastUrl": "https://your_cache_host.net/pbc/v1/cache?uuid=3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16"
+  "vastUrl": "https://my_prebid_cache.net/pbc/v1/cache?uuid=3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16"
 }
 ```
 
-By calling Object.assign on your own player/freewheel configuration custom attribute, you will add the Adhese parametersas key/value pairs to the Freewheel Ad Server Request.  
+By calling Object.assign on your own player/freewheel configuration custom attribute, you will add the Adhese parameters as key/value pairs to the Freewheel Ad Server Request.  
 The result looks like this:
 
 ```
