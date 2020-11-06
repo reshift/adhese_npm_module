@@ -1,9 +1,9 @@
 # npm_module
-Adhese implementation as an NPM module for use in NextJS projects.  
+Adhese implementation as an NPM module for use in NextJS projects.
+
 The module is intended to be used as part of a Server Side Rendered application. It fetches the advertisments that are planned for the content being consumed and makes them available as custom parameters for the Freewheel Ad Server. It uses a Prebid Cache Server to store VAST xml until Freewheel returns its decision.
 
-Use of this module requires an active Adhese account.  
-The current version is no more than a proof of concept and is not production ready.
+Use of this module requires an active Adhese account. The current version is no more than a proof of concept and is not production ready.
 
 ## install
 Execute the following command in the root of your ReactJS projects.
