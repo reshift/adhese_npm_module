@@ -38,7 +38,7 @@ Adhese returns an object with three parameters, that looks like this:
 {
   "hb_pb_cat_dur": "12.00_30s",
   "hb_cache": "3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16",
-  "vastUrl": "https://prebid.adnxs.com/pbc/v1/cache?uuid=3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16"
+  "vastUrl": "https://your_cache_host.net/pbc/v1/cache?uuid=3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16"
 }
 ```
 
