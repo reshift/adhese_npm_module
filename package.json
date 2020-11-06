@@ -1,6 +1,6 @@
 {
   "name": "adhese",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Work in Progress. Will make Adhese implementation available for ReactJS/NextJS applications.",
   "main": "adhese.js",
   "scripts": {
