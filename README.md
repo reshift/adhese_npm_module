@@ -1,4 +1,4 @@
-# npm_module
+# adhese npm module
 Adhese implementation as an NPM module for use in NextJS projects.
 
 The module is intended to be used as part of a Server Side Rendered application. It fetches the advertisments that are planned for the content being consumed and makes them available as custom parameters for the Freewheel Ad Server. It uses a Prebid Cache Server to store VAST xml until Freewheel returns its decision.
@@ -36,11 +36,9 @@ Adhese returns an object with three parameters, that looks like this:
 
 ```
 {
-  "adheseProps": {
-    "hb_pb_cat_dur": "12.00_30s",
-    "hb_cache": "3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16",
-    "vastUrl": "https://prebid.adnxs.com/pbc/v1/cache?uuid=3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16"
-  }
+  "hb_pb_cat_dur": "12.00_30s",
+  "hb_cache": "3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16",
+  "vastUrl": "https://prebid.adnxs.com/pbc/v1/cache?uuid=3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16"
 }
 ```
 
