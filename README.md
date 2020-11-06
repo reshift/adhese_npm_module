@@ -26,7 +26,7 @@ export async function getServerSideProps() {
   let adheseProps = await getAdheseAds(adheseConfig);
   
   //add the returned object to your Freewheel configuration as part of the 'custom' attribute
-  myFreewheelConfig = Object.assign(myFreewheelConfig, adheseProps);
+  myFreewheelConfig.custom = Object.assign(myFreewheelConfig.custom, adheseProps);
   return { props: {myFreewheelConfig} }
 
 }
@@ -42,7 +42,8 @@ Adhese returns an object with three parameters, that looks like this:
 }
 ```
 
-These parameters can be added to the Freewheel ad server configuration of for example JWPlayer:
+By calling Object.assign on your own player/freewheel configuration custom attribute, you will add the Adhese parametersas key/value pairs to the Freewheel Ad Server Request.  
+The result looks like this:
 
 ```
 jwplayer: {
@@ -69,5 +70,5 @@ jwplayer: {
 
 ```
 
-The result of the custom Freewheel parameters can be treated like any Prebid Bid for FW. More on this here: https://docs.prebid.org/adops/setting-up-prebid-video-in-freewheel.html
+To deal with these key/value pairs, you can find more info here: https://docs.prebid.org/adops/setting-up-prebid-video-in-freewheel.html
 
