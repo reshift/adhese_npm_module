@@ -18,7 +18,7 @@ export async function getServerSideProps() {
   // create a configuration object that contains your Adhese account id
   let adheseConfig = {
     account: 'demo',
-    cacheUrl: 'https://my_prebid_cache.net/cache',
+    cacheUrl: 'https://my_prebid_cache.net/pbc/v1/cache',
     slot: 'example_video_slot'
   };
   
