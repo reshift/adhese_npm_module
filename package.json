@@ -1,0 +1,11 @@
+{
+  "name": "adhese",
+  "version": "0.0.2",
+  "description": "Work in Progress. Will make Adhese implementation for ReactJS/NextJS applications.",
+  "main": "adhese.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
