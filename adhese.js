@@ -1,4 +1,4 @@
-async function getAdheseAds(config) {
+async function getAdheseAds(context, config) {
     if (!config || !config.account) return {};
     
     const res = await fetch('https://ads-' + config.account + '.adhese.com/json/sl' + config.slot)

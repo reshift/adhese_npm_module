@@ -3,7 +3,7 @@ Adhese implementation as an NPM module for use in NextJS projects.
 
 The module is intended to be used as part of a Server Side Rendered application. It fetches the advertisments that are planned for the content being consumed and makes them available as custom parameters for the Freewheel Ad Server. It uses a Prebid Cache Server to store VAST xml until Freewheel returns its decision.
 
-Use of this module requires an active Adhese account. The current version is no more than a proof of concept and is not production ready.
+Use of this module requires an active Adhese account.
 
 ## install
 Execute the following command in the root of your ReactJS projects.
@@ -13,7 +13,7 @@ Execute the following command in the root of your ReactJS projects.
 Add a call to Adhese in the getServerSideProps of your page.
 
 ```
-export async function getServerSideProps() {  
+export async function getServerSideProps(context) {  
 
   // create a configuration object that contains your Adhese account id
   let adheseConfig = {
@@ -23,7 +23,7 @@ export async function getServerSideProps() {
   };
   
   // execute the request to Adhese and wait for the response
-  let adheseProps = await getAdheseAds(adheseConfig);
+  let adheseProps = await getAdheseAds(context, adheseConfig);
   
   //add the returned object to your Freewheel configuration as part of the 'custom' attribute
   myFreewheelConfig.custom = Object.assign(myFreewheelConfig.custom, adheseProps);
