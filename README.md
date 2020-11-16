@@ -10,6 +10,10 @@ Execute the following command in the root of your ReactJS projects.
 > npm install adhese
 
 ## usage
+Import the Adhese function
+```
+import { getAdheseAds } from 'adhese';
+```
 Add a call to Adhese in the getServerSideProps of your page.
 
 ```
