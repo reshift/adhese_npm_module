@@ -7,8 +7,9 @@ Use of this module requires an active Adhese account.
 
 ## install
 Execute the following command in the root of your ReactJS projects.
-> npm install adhese
-
+```
+npm install adhese
+```
 ## usage
 Import the Adhese function
 ```
@@ -76,3 +77,40 @@ jwplayer: {
 
 To deal with these key/value pairs, you can find more info here: https://docs.prebid.org/adops/setting-up-prebid-video-in-freewheel.html
 
+##configuration options
+
+You can pass several options in the adhese config, all of them explained below.
+
+```
+adheseConfig = {  
+  // to be obtained from your Adhese account, obligatory  
+  account: 'adhese_acount_id',  
+
+  //url of the xml cache where returned ads will be stored temporarily, obligatory
+  cacheUrl: 'https://my_prebid_cache.net/pbc/v1/cache',  
+
+  // array of slots for which you want to request ads
+  slots: ['myslot_1','myslot_2'],  
+
+  // slot and slots can be combined, at least one of the two is obligatory
+  slot: 'myslot_3',
+
+  // content identifier (video/media) for contextual lookups, optional
+  videoId: 'contentId', 
+
+  // user id for dmp matching, optional
+  userId: 'authenticatedUserId', 
+
+  // desktop, mobile, tablet, tv - optional
+  deviceType: 'desktop', 
+
+  // optional consent string
+  consentString: 'IABConsentString', 
+
+  // if no IAB string available, indicate consent through one of these two values: all, none - optional (defaults to 'none')
+  binaryConsent: 'all', 
+
+  // optional, defaults to false
+  debug: true 
+}
+```  
