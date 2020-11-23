@@ -3,7 +3,10 @@ async function getAdheseAds(config) {
 }
 
 async function getAdheseAds(context, config) {
-  if (!config || !config.account) return {};
+  if (!config || !config.account || !config.cacheUrl || (!config.slot && !config.slots)) {
+    console.error("ADHESE: Config misses obligatory attributes, at least account, cacheUrl and (slot or slots) are required.");
+    return {};
+  }
   
   let headers = {
     'content-type': 'application/json',
@@ -12,18 +15,19 @@ async function getAdheseAds(context, config) {
   if (config.debug) {
     headers['Cookie'] = 'debugKey=npm_module';
   }
-  let referrer = context.req.headers.referer;
+  const referrer = context.req.headers.referer;
   
   let xf = "";
   if (context && context.req.headers.referer) {
     xf = base64urlEncode(context.req.headers.referer);
   }
-  let dt = config.deviceType ? config.deviceType : "unknown";
-  let tl = config.binaryConsent ? config.binaryConsent : "none";
-  let xt = config.consentString ? config.consentString : "";
-  let vi = config.videoId ? config.videoId : "unknown";
-  let ui = config.userId ? config.userId : "unknown";
-  
+  const dt = config.deviceType ? config.deviceType : "unknown";
+  const tl = config.binaryConsent ? config.binaryConsent : "none";
+  const xt = config.consentString ? config.consentString : "";
+  const vi = config.videoId ? config.videoId : "unknown";
+  const ui = config.userId ? config.userId : "unknown";
+  const ttlInSec = config.cacheTTLInSeconds ? config.cacheTTLInSeconds : 360;
+
   let slots = [];
   if (config.slots) {
     slots = config.slots.map(slot => ({ slotname: slot }));
@@ -52,30 +56,66 @@ async function getAdheseAds(context, config) {
     })
   };
   
-  console.log(requestOptions);
   const res = await fetch('https://ads-' + config.account + '.adhese.com/json/', requestOptions)
   const data = await res.json()
   
-  try {
-    // add vast xml to cache server
-    const regexII = /^.*II([^\/]+).*/;
-    let cacheKey = data[0].tracker.match(regexII)[1];
-    addToVASTCache(config.cacheUrl, cacheKey, data[0].tag);
+  if (data.length== 0) {
+    if (config.debug) {
+      console.debug("ADHESE: no ads");
+    }
+    return {};
+  }
 
-    let adheseProps = {};
-    // freewheel hb parameters
-    adheseProps.hb_pb_cat_dur = Math.round(data[0].extension.prebid.cpm.amount) + '.00_' + (data[0].adDuration2nd - 1) + 's';
-    adheseProps.hb_cache = cacheKey;
-    // vastUrl to cache
-    adheseProps.vastUrl = config.cacheUrl + '?uuid=' + cacheKey;
-
-    return adheseProps;
-  } catch(e) {}
-
-  return {};
+  let adheseProps = {};
+  data.forEach(function (ad, index) {
+    if (config.debug) {
+      console.debug("ADHESE: ad received from ", ad.origin + (ad.originInstance ? "-" + ad.originInstance : ""));
+    }
+    
+    let markup = "";
+    if (ad.origin == "JERLICIA") {
+      markup = ad.tag;
+    } else {
+      markup = ad.body;
+    }
+    
+    if (markup && markup != "") {
+      let cacheKey = uuid();
+      let vastUrl = addToVASTCache(config.cacheUrl, cacheKey, markup, ttlInSec);
+      adheseProps = Object.assign(adheseProps, {['adh_vast_url'+(index>0?'_'+(index+1):'')]:vastUrl});
+      
+      let durationInSec = getDurationFromVastXml(markup);
+      adheseProps = Object.assign(adheseProps, 
+        getFreewheelParams(index,{
+          cpm: ad.extension.prebid.cpm.amount, 
+          durationInSec: durationInSec, 
+          cacheKey: cacheKey
+        })
+      );    
+    }
+  });
+  return adheseProps;
 }
 
-function addToVASTCache(cacheUrl, cacheKey, vastXML) {
+function getFreewheelParams(index, values) {
+  return {
+    ['hb_cache'+(index>0?'_'+(index+1):'')]: values.cacheKey,
+    ['hb_pb_cat_dur'+(index>0?'_'+(index+1):'')]: Math.round(values.cpm) + '.00_' + values.durationInSec + 's'
+  };
+}
+
+function getDurationFromVastXml(markup) {
+  const regexDuration = /<Duration>(\d\d):(\d\d):(\d\d)<\/Duration>/;
+  if (regexDuration.test(markup)) {
+    let hour = parseInt(markup.match(regexDuration)[1]);
+    let min = parseInt(markup.match(regexDuration)[2]);
+    let sec = parseInt(markup.match(regexDuration)[3]);
+    return (hour*3600) + (min*60) + sec;
+  }
+  return 0;
+}
+
+function addToVASTCache(cacheUrl, cacheKey, vastXML, ttlInSec) {
   const requestOptions = {
     method: 'POST',
     headers: {
@@ -84,13 +124,14 @@ function addToVASTCache(cacheUrl, cacheKey, vastXML) {
     body: JSON.stringify({
       "puts": [{
         "type": "xml",
-        "ttlseconds": 360,
+        "ttlseconds": ttlInSec,
         "value": vastXML,
         "key": cacheKey
       }]
     })
   };
   fetch(cacheUrl, requestOptions);
+  return cacheUrl + '?uuid=' + cacheKey;
 }
 
 function base64urlEncode(s) {
@@ -107,6 +148,13 @@ function btoa(str) {
   }
 
   return buffer.toString('base64');
+}
+
+function uuid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
 }
 
 exports.getAdheseAds = getAdheseAds;

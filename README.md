@@ -77,7 +77,7 @@ jwplayer: {
 
 To deal with these key/value pairs, you can find more info here: https://docs.prebid.org/adops/setting-up-prebid-video-in-freewheel.html
 
-##configuration options
+## configuration options
 
 You can pass several options in the adhese config, all of them explained below.
 
@@ -96,7 +96,7 @@ adheseConfig = {
   slot: 'myslot_3',
 
   // content identifier (video/media) for contextual lookups, optional
-  videoId: 'contentId', 
+  videoId: 'mediaId', 
 
   // user id for dmp matching, optional
   userId: 'authenticatedUserId', 
@@ -108,9 +108,14 @@ adheseConfig = {
   consentString: 'IABConsentString', 
 
   // if no IAB string available, indicate consent through one of these two values: all, none - optional (defaults to 'none')
-  binaryConsent: 'all', 
+  binaryConsent: 'none', 
 
-  // optional, defaults to false
-  debug: true 
+  // the time to keep the cached VAST xml in the cache server, defaults to 360 seconds
+  cacheTTLInSeconds: 120,
+
+  // optional, defaults to false - not to be used in a production environment
+  // when set to true, a cookie with value debugKey=npm_module is added to each request
+  // allowing you to use the Debug Tool in your Adhese account
+  debug: false 
 }
 ```  
