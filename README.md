@@ -21,6 +21,7 @@ Add a call to Adhese in the getServerSideProps of your page.
 export async function getServerSideProps(context) {  
 
   // create a configuration object that contains your Adhese account id
+  // this a minimal configuration, for more options see further in this document
   let adheseConfig = {
     account: 'demo',
     cacheUrl: 'https://my_prebid_cache.net/pbc/v1/cache',
@@ -37,13 +38,14 @@ export async function getServerSideProps(context) {
 }
 ```
 
-Adhese returns an object with three parameters, that looks like this:
+Adhese returns an object with three or more parameters, that looks like the example below.  
+If multiple slots have been requested, a set of 3 parameters for each returned ad will be available.
 
 ```
 {
   "hb_pb_cat_dur": "12.00_30s",
   "hb_cache": "3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16",
-  "vastUrl": "https://my_prebid_cache.net/pbc/v1/cache?uuid=3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16"
+  "adh_vast_url": "https://my_prebid_cache.net/pbc/v1/cache?uuid=3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16"
 }
 ```
 
@@ -66,7 +68,8 @@ jwplayer: {
                 profileid: "1234567:some_identifier",
                 custom: {
                     hb_pb_cat_dur: "12.00_30s",
-                    hb_cache: "3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16"
+                    hb_cache: "3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16",
+                    adh_vast_url: "https://my_prebid_cache.net/pbc/v1/cache?uuid=3a87aa93-b5f4-4fd1-b85b-8c40a9f35f16"
                 }
             }
         }

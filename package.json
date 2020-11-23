@@ -1,7 +1,7 @@
 {
   "name": "adhese",
   "version": "0.0.4",
-  "description": "Adhese implementation for NextJS getServerSideProps",
+  "description": "Adhese implementation for NextJS getServerSideProps.",
   "main": "adhese.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
