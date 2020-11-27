@@ -1,7 +1,3 @@
-async function getAdheseAds(config) {
-  return getAdheseAds(undefined, config)
-}
-
 async function getAdheseAds(context, config) {
   if (!config || !config.account || !config.cacheUrl || (!config.slot && !config.slots)) {
     console.error("ADHESE: Config misses obligatory attributes, at least account, cacheUrl and (slot or slots) are required.");
@@ -9,17 +5,20 @@ async function getAdheseAds(context, config) {
   }
   
   let headers = {
-    'content-type': 'application/json',
-    'user-agent': context.req.headers['user-agent']    
+    'content-type': 'application/json'    
   };
+  if (context && context.req.headers['user-agent']) {
+    headers['User-Agent'] = context.req.headers['user-agent']
+  }
   if (config.debug) {
     headers['Cookie'] = 'debugKey=npm_module';
   }
-  const referrer = context.req.headers.referer;
   
+  let referrer = "";  
   let xf = "";
   if (context && context.req.headers.referer) {
     xf = base64urlEncode(context.req.headers.referer);
+    referrer = context.req.headers.referer;
   }
   const dt = config.deviceType ? config.deviceType : "unknown";
   const tl = config.binaryConsent ? config.binaryConsent : "none";
