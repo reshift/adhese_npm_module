@@ -26,7 +26,8 @@ async function getAdheseAds(context, config) {
   const vi = config.videoId ? config.videoId : "unknown";
   const ui = config.userId ? config.userId : "unknown";
   const ttlInSec = config.cacheTTLInSeconds ? config.cacheTTLInSeconds : 360;
-
+  const maxCpm = config.maxCpm ? config.maxCpm : 50;
+  
   let slots = [];
   if (config.slots) {
     slots = config.slots.map(slot => ({ slotname: slot }));
@@ -66,6 +67,7 @@ async function getAdheseAds(context, config) {
   }
 
   let adheseProps = {};
+  
   data.forEach(function (ad, index) {
     if (config.debug) {
       console.debug("ADHESE: ad received from ", ad.origin + (ad.originInstance ? "-" + ad.originInstance : ""));
@@ -88,7 +90,8 @@ async function getAdheseAds(context, config) {
         getFreewheelParams(index,{
           cpm: ad.extension.prebid.cpm.amount, 
           durationInSec: durationInSec, 
-          cacheKey: cacheKey
+          cacheKey: cacheKey,
+          maxCpm: maxCpm
         })
       );    
     }
@@ -99,10 +102,11 @@ async function getAdheseAds(context, config) {
 function getFreewheelParams(index, values) {
   return {
     ['hb_cache'+(index>0?'_'+(index+1):'')]: values.cacheKey,
-    ['hb_pb_cat_dur'+(index>0?'_'+(index+1):'')]: Math.round(values.cpm) + '.00_' + values.durationInSec + 's'
+    ['hb_pb_cat_dur'+(index>0?'_'+(index+1):'')]: Math.round(values.cpm>values.maxCpm?values.maxCpm:values.cpm) + '.00_' + values.durationInSec + 's'
   };
 }
 
+// duration bij Wrapper
 function getDurationFromVastXml(markup) {
   const regexDuration = /<Duration>(\d\d):(\d\d):(\d\d)<\/Duration>/;
   if (regexDuration.test(markup)) {
