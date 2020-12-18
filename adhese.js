@@ -3,7 +3,6 @@ async function getAdheseAds(context, config) {
     console.error("ADHESE: Config misses obligatory attributes, at least account, cacheUrl and (slot or slots) are required.");
     return {};
   }
-  
   let headers = {
     'content-type': 'application/json'    
   };
@@ -55,18 +54,21 @@ async function getAdheseAds(context, config) {
       }
     })
   };
-  
+
+  let adheseProps = {};
+  var userSync = getUserSyncMarkup(config);
+  adheseProps = Object.assign(adheseProps, {['user_sync_iframe']:userSync});
+
   const res = await fetch('https://ads-' + config.account + '.adhese.com/json/', requestOptions)
   const data = await res.json()
   
+  adheseProps = Object.assign(adheseProps, {['adh']:(data.length!=0?"bid":"no-bid")});
   if (data.length== 0) {
     if (config.debug) {
       console.debug("ADHESE: no ads");
     }
-    return {};
+    return adheseProps;
   }
-
-  let adheseProps = {};
   
   data.forEach(function (ad, index) {
     if (config.debug) {
@@ -85,10 +87,18 @@ async function getAdheseAds(context, config) {
       let vastUrl = addToVASTCache(config.cacheUrl, cacheKey, markup, ttlInSec);
       adheseProps = Object.assign(adheseProps, {['adh_vast_url'+(index>0?'_'+(index+1):'')]:vastUrl});
       
+      adheseProps = Object.assign(adheseProps, {['adh_origin']:ad.origin + (ad.originInstance ? "-" + ad.originInstance : "")});
+
       let durationInSec = getDurationFromVastXml(markup);
+      
+      let cpm = 0;      
+      if (ad.extension.prebid!=undefined) {
+        cpm = ad.extension.prebid.cpm.amount;
+      }
+      
       adheseProps = Object.assign(adheseProps, 
         getFreewheelParams(index,{
-          cpm: ad.extension.prebid.cpm.amount, 
+          cpm: cpm, 
           durationInSec: durationInSec, 
           cacheKey: cacheKey,
           maxCpm: maxCpm
@@ -96,6 +106,7 @@ async function getAdheseAds(context, config) {
       );    
     }
   });
+
   return adheseProps;
 }
 
@@ -106,16 +117,28 @@ function getFreewheelParams(index, values) {
   };
 }
 
-// duration bij Wrapper
-function getDurationFromVastXml(markup) {
-  const regexDuration = /<Duration>(\d\d):(\d\d):(\d\d)<\/Duration>/;
-  if (regexDuration.test(markup)) {
-    let hour = parseInt(markup.match(regexDuration)[1]);
-    let min = parseInt(markup.match(regexDuration)[2]);
-    let sec = parseInt(markup.match(regexDuration)[3]);
-    return (hour*3600) + (min*60) + sec;
-  }
+function getDurationFromVastXml(markup, ad) {
+  if (markup.indexOf('<Wrapper>')==-1) {
+    const regexDuration = /<Duration>(\d\d):(\d\d):(\d\d)<\/Duration>/;
+    if (regexDuration.test(markup)) {
+      let match = markup.match(regexDuration);
+      let hour = parseInt(match[1]);
+      let min = parseInt(match[2]);
+      let sec = parseInt(match[3]);
+      return (hour*3600) + (min*60) + sec;
+    }
+  } else if (ad.slotName){
+    const regexDuration = /^[^\d]*([\d]+)[^\d]*$/;
+    if (regexDuration.test(ad.slotName)) {
+      let sec = parseInt(markup.match(regexDuration)[1]);
+      return sec;
+    }
+  }  
   return 0;
+}
+
+function getUserSyncMarkup(config) {
+	return "https://user-sync.adhese.com/iframe/user_sync.html?account=" + config.account + "&gdpr=1&consentString=" + config.consentString;	
 }
 
 function addToVASTCache(cacheUrl, cacheKey, vastXML, ttlInSec) {
