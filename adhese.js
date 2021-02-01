@@ -127,12 +127,6 @@ function getDurationFromVastXml(markup, ad) {
       let sec = parseInt(match[3]);
       return (hour*3600) + (min*60) + sec;
     }
-  } else if (ad.slotName){
-    const regexDuration = /^[^\d]*([\d]+)[^\d]*$/;
-    if (regexDuration.test(ad.slotName)) {
-      let sec = parseInt(markup.match(regexDuration)[1]);
-      return sec;
-    }
   }  
   return 30;
 }
