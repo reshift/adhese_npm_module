@@ -89,7 +89,7 @@ async function getAdheseAds(context, config) {
       
       adheseProps = Object.assign(adheseProps, {['adh_origin']:ad.origin + (ad.originInstance ? "-" + ad.originInstance : "")});
 
-      let durationInSec = getDurationFromVastXml(markup);
+      let durationInSec = getDurationFromVastXml(markup, ad);
       
       let cpm = 0;      
       if (ad.extension.prebid!=undefined) {
@@ -134,7 +134,7 @@ function getDurationFromVastXml(markup, ad) {
       return sec;
     }
   }  
-  return 0;
+  return 30;
 }
 
 function getUserSyncMarkup(config) {
