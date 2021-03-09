@@ -4,7 +4,7 @@ async function getAdheseAds(context, config) {
     return {};
   }
   let headers = {
-    'content-type': 'application/json'    
+    'content-type': 'application/json'
   };
   if (context && context.req.headers['user-agent']) {
     headers['User-Agent'] = context.req.headers['user-agent']
@@ -12,8 +12,8 @@ async function getAdheseAds(context, config) {
   if (config.debug) {
     headers['Cookie'] = 'debugKey=npm_module';
   }
-  
-  let referrer = "";  
+
+  let referrer = "";
   let xf = "";
   if (context && context.req.headers.referer) {
     xf = base64urlEncode(context.req.headers.referer);
@@ -26,15 +26,15 @@ async function getAdheseAds(context, config) {
   const ui = config.userId ? config.userId : "unknown";
   const ttlInSec = config.cacheTTLInSeconds ? config.cacheTTLInSeconds : 360;
   const maxCpm = config.maxCpm ? config.maxCpm : 50;
-  
+
   let slots = [];
   if (config.slots) {
     slots = config.slots.map(slot => ({ slotname: slot }));
   }
-  if(config.slot) {
-    slots.push({slotname:config.slot});
+  if (config.slot) {
+    slots.push({ slotname: config.slot });
   }
-  if (slots.length==0) return {};
+  if (slots.length == 0) return {};
 
   const requestOptions = {
     method: 'POST',
@@ -57,53 +57,53 @@ async function getAdheseAds(context, config) {
 
   let adheseProps = {};
   var userSync = getUserSyncMarkup(config);
-  adheseProps = Object.assign(adheseProps, {['user_sync_iframe']:userSync});
+  adheseProps = Object.assign(adheseProps, { ['user_sync_iframe']: userSync });
 
   const res = await fetch('https://ads-' + config.account + '.adhese.com/json/', requestOptions)
   const data = await res.json()
-  
-  adheseProps = Object.assign(adheseProps, {['adh']:(data.length!=0?"bid":"no-bid")});
-  if (data.length== 0) {
+
+  adheseProps = Object.assign(adheseProps, { ['adh']: (data.length != 0 ? "bid" : "no-bid") });
+  if (data.length == 0) {
     if (config.debug) {
       console.debug("ADHESE: no ads");
     }
     return adheseProps;
   }
-  
+
   data.forEach(function (ad, index) {
     if (config.debug) {
       console.debug("ADHESE: ad received from ", ad.origin + (ad.originInstance ? "-" + ad.originInstance : ""));
     }
-    
+
     let markup = "";
     if (ad.origin == "JERLICIA") {
       markup = ad.tag;
     } else {
       markup = ad.body;
     }
-    
+
     if (markup && markup != "") {
       let cacheKey = uuid();
       let vastUrl = addToVASTCache(config.cacheUrl, cacheKey, markup, ttlInSec);
-      adheseProps = Object.assign(adheseProps, {['adh_vast_url'+(index>0?'_'+(index+1):'')]:vastUrl});
-      
-      adheseProps = Object.assign(adheseProps, {['adh_origin']:ad.origin + (ad.originInstance ? "-" + ad.originInstance : "")});
+      adheseProps = Object.assign(adheseProps, { ['adh_vast_url' + (index > 0 ? '_' + (index + 1) : '')]: vastUrl });
+
+      adheseProps = Object.assign(adheseProps, { ['adh_origin']: ad.origin + (ad.originInstance ? "-" + ad.originInstance : "") });
 
       let durationInSec = getDurationFromVastXml(markup, ad);
-      
-      let cpm = 0;      
-      if (ad.extension.prebid!=undefined) {
+
+      let cpm = 0;
+      if (ad.extension.prebid != undefined) {
         cpm = ad.extension.prebid.cpm.amount;
       }
-      
-      adheseProps = Object.assign(adheseProps, 
-        getFreewheelParams(index,{
-          cpm: cpm, 
-          durationInSec: durationInSec, 
+
+      adheseProps = Object.assign(adheseProps,
+        getFreewheelParams(index, {
+          cpm: cpm,
+          durationInSec: durationInSec,
           cacheKey: cacheKey,
           maxCpm: maxCpm
         })
-      );    
+      );
     }
   });
 
@@ -112,27 +112,27 @@ async function getAdheseAds(context, config) {
 
 function getFreewheelParams(index, values) {
   return {
-    ['hb_cache'+(index>0?'_'+(index+1):'')]: values.cacheKey,
-    ['hb_pb_cat_dur'+(index>0?'_'+(index+1):'')]: Math.round(values.cpm>values.maxCpm?values.maxCpm:values.cpm) + '.00_' + values.durationInSec + 's'
+    ['hb_cache' + (index > 0 ? '_' + (index + 1) : '')]: values.cacheKey,
+    ['hb_pb_cat_dur' + (index > 0 ? '_' + (index + 1) : '')]: Math.round(values.cpm > values.maxCpm ? values.maxCpm : values.cpm) + '.00_' + values.durationInSec + 's'
   };
 }
 
 function getDurationFromVastXml(markup, ad) {
-  if (markup.indexOf('<Wrapper>')==-1) {
+  if (markup.indexOf('<Wrapper>') == -1) {
     const regexDuration = /<Duration>(\d\d):(\d\d):(\d\d)<\/Duration>/;
     if (regexDuration.test(markup)) {
       let match = markup.match(regexDuration);
       let hour = parseInt(match[1]);
       let min = parseInt(match[2]);
       let sec = parseInt(match[3]);
-      return (hour*3600) + (min*60) + sec;
+      return (hour * 3600) + (min * 60) + sec;
     }
-  }  
+  }
   return 30;
 }
 
 function getUserSyncMarkup(config) {
-	return "https://user-sync.adhese.com/iframe/user_sync.html?account=" + config.account + "&gdpr=1&consentString=" + config.consentString;	
+  return "https://user-sync.adhese.com/iframe/user_sync.html?account=" + config.account + "&gdpr=1&consentString=" + config.consentString;
 }
 
 function addToVASTCache(cacheUrl, cacheKey, vastXML, ttlInSec) {
@@ -171,7 +171,7 @@ function btoa(str) {
 }
 
 function uuid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
