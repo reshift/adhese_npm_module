@@ -1,6 +1,6 @@
 {
   "name": "adhese",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "Adhese implementation for NextJS getServerSideProps.",
   "main": "adhese.js",
   "scripts": {
