@@ -62,7 +62,6 @@ async function getAdheseAds(context, config) {
   var userSync = getUserSyncMarkup(config);
   adheseProps = Object.assign(adheseProps, { ['user_sync_iframe']: userSync });
   
-  console.log(requestOptions);
   const res = await fetch('https://ads-' + config.account + '.adhese.com/json/', requestOptions)
   const data = await res.json()
 
@@ -80,7 +79,6 @@ async function getAdheseAds(context, config) {
   data.filter(isValidBid).forEach(function (ad, index) {
     if (config.debug) {
       console.debug("ADHESE: ad received from ", ad.origin + (ad.originInstance ? "-" + ad.originInstance : ""));
-      // console.log(ad);
     }
     
     let vastUrl = "";
@@ -126,7 +124,6 @@ async function getAdheseAds(context, config) {
   if (config.debug) {
 
   }
-  console.log(adheseProps);
   return adheseProps;
 }
 
