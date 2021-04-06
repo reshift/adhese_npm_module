@@ -24,7 +24,10 @@ export async function getServerSideProps(context) {
   // this a minimal configuration, for more options see further in this document
   let adheseConfig = {
     account: 'demo',
-    slot: 'example_video_slot'
+    slots: [
+      'demo_pre-previd30',
+      'demo_mid1-previd30'
+    ]
   };
   
   // execute the request to Adhese and wait for the response
@@ -141,9 +144,6 @@ adheseConfig = {
 
   // array of slots for which you want to request ads
   slots: ['myslot_1','myslot_2'],  
-
-  // slot and slots can be combined, at least one of the two is obligatory
-  slot: 'myslot_3',
 
   // content identifier (video/media) for contextual lookups, optional
   videoId: 'mediaId', 
