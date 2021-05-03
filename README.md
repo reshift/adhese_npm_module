@@ -73,7 +73,7 @@ Each items in the ads array contains the following attributes:
   ads: [
     {
       adh_vast_url: 'https://ads-demo.adhese.com/content/5c37ca3c-7589-442c-b72e-1f9215fb11ba',
-      adh_vast_path: '/content/5c37ca3c-7589-442c-b72e-1f9215fb11ba',
+      adh_vast_path: 'content/5c37ca3c-7589-442c-b72e-1f9215fb11ba',
       adh_origin: 'JERLICIA',
       adh_campaign: 'Multiple Ad Breaks - Demo Campaign',
       adh_cpm: '6.0',
@@ -84,7 +84,7 @@ Each items in the ads array contains the following attributes:
     },
     {
       adh_vast_url: 'https://ads-demo.adhese.com/content/e056b3e5-0d2e-4e62-b0c7-e4246b8c34fa',
-      adh_vast_path: '/content/e056b3e5-0d2e-4e62-b0c7-e4246b8c34fa',
+      adh_vast_path: 'content/e056b3e5-0d2e-4e62-b0c7-e4246b8c34fa',
       adh_origin: 'DALE-demo',
       adh_campaign: '1',
       adh_cpm: '1.5',
@@ -96,9 +96,9 @@ Each items in the ads array contains the following attributes:
   ],
   freewheel_config: {
     'demo_pre-previd30': '6.00_30s',
-    'demo_pre-previd30_url': '/content/5c37ca3c-7589-442c-b72e-1f9215fb11ba',
+    'demo_pre-previd30_url': 'content/5c37ca3c-7589-442c-b72e-1f9215fb11ba',
     'demo_mid1-previd30': '2.00_30s',
-    'demo_mid1-previd30_url': '/content/e056b3e5-0d2e-4e62-b0c7-e4246b8c34fa'
+    'demo_mid1-previd30_url': 'content/e056b3e5-0d2e-4e62-b0c7-e4246b8c34fa'
   },
   google_ad_manager_tag: '&cust_params=demo_pre-previd30%3D6.00_30s%26demo_mid1-previd30%3D2.00_30s'  
 }
@@ -123,9 +123,9 @@ jwplayer: {
                 profileid: "1234567:some_identifier",
                 custom: {
                     demo_pre-previd30: "6.00_30s",
-                    demo_pre-previd30_url: "/content/5c37ca3c-7589-442c-b72e-1f9215fb11ba",
+                    demo_pre-previd30_url: "content/5c37ca3c-7589-442c-b72e-1f9215fb11ba",
                     demo_mid1-previd30: "2.00_30s",
-                    demo_mid1-previd30_url: "/content/e056b3e5-0d2e-4e62-b0c7-e4246b8c34fa"
+                    demo_mid1-previd30_url: "content/e056b3e5-0d2e-4e62-b0c7-e4246b8c34fa"
                 }
             }
         }

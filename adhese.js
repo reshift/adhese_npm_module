@@ -64,7 +64,7 @@ async function getAdheseAds(context, config) {
   
   const res = await fetch('https://ads-' + config.account + '.adhese.com/json/', requestOptions)
   const data = await res.json()
-  const vastPathRegex = /:\/\/(?:www\.)?.[^/]+(.*)/;
+  const vastPathRegex = /:\/\/(?:www\.)?.[^/]+\/(.*)/;
 
   adheseProps = Object.assign(adheseProps, { ['adh']: (data.length != 0 ? "bid" : "no-bid") });
   if (data.length == 0) {
@@ -90,7 +90,7 @@ async function getAdheseAds(context, config) {
     if (ad.cachedBodyUrl && ad.cachedBodyUrl != "") {
       vastUrl = ad.cachedBodyUrl;
       const matches = ad.cachedBodyUrl.match(vastPathRegex);
-      vastPath = matches[1];
+      vastPath = matches[1];      
     }
 
     let adheseSlot = {};
