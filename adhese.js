@@ -64,13 +64,16 @@ async function getAdheseAds(context, config) {
   
   const res = await fetch('https://ads-' + config.account + '.adhese.com/json/', requestOptions)
   const data = await res.json()
+  const vastPathRegex = /:\/\/(?:www\.)?.[^/]+(.*)/;
 
   adheseProps = Object.assign(adheseProps, { ['adh']: (data.length != 0 ? "bid" : "no-bid") });
   if (data.length == 0) {
     if (config.debug) {
       console.debug("ADHESE: no ads");
     }
-    adheseProps = Object.assign(adheseProps, { ['ads']: [] });
+    adheseProps = Object.assign(adheseProps, { ['ads']: [] });    
+    adheseProps = Object.assign(adheseProps, { ['google_ad_manager_tag']: '' });
+    adheseProps = Object.assign(adheseProps, { ['freewheel_config']: {} });
     return adheseProps;
   }
 
@@ -82,13 +85,17 @@ async function getAdheseAds(context, config) {
     }
     
     let vastUrl = "";
+    let vastPath = "";
     let durationInSec = 30;
     if (ad.cachedBodyUrl && ad.cachedBodyUrl != "") {
       vastUrl = ad.cachedBodyUrl;
+      const matches = ad.cachedBodyUrl.match(vastPathRegex);
+      vastPath = matches[1];
     }
 
     let adheseSlot = {};
     adheseSlot = Object.assign(adheseSlot, { ['adh_vast_url']: vastUrl });
+    adheseSlot = Object.assign(adheseSlot, { ['adh_vast_path']: vastPath });
     adheseSlot = Object.assign(adheseSlot, { ['adh_origin']: ad.origin + (ad.originInstance ? "-" + ad.originInstance : "") });
     if (ad.origin == "JERLICIA") {
       adheseSlot = Object.assign(adheseSlot, { ['adh_campaign']: ad.orderName });
@@ -122,7 +129,7 @@ async function getAdheseAds(context, config) {
   adheseProps = Object.assign(adheseProps, { ['freewheel_config']: freewheelProps });
 
   if (config.debug) {
-
+    console.log(adheseProps);
   }
   return adheseProps;
 }
@@ -172,7 +179,7 @@ function getFreeWheelProps(ads) {
   var out = {};
   ads.forEach((ad) => {
     out[ad["adh_slot"]] = ad["adh_as_li_target"];
-    out[ad["adh_slot"]+"_url"] = ad["adh_vast_url"]
+    out[ad["adh_slot"]+"_url"] = ad["adh_vast_path"]
   });
   return out;
 }
