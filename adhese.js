@@ -179,7 +179,8 @@ function getFreeWheelProps(ads) {
   var out = {};
   ads.forEach((ad) => {
     out[ad["adh_slot"]] = ad["adh_as_li_target"];
-    out[ad["adh_slot"]+"_url"] = ad["adh_vast_path"]
+    out[ad["adh_slot"]+"_url"] = ad["adh_vast_path"];
+    out[ad["adh_slot"]+"_origin"] = ad["adh_origin"];
   });
   return out;
 }
