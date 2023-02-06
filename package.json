@@ -1,6 +1,6 @@
 {
   "name": "@reshift/adhese_npm_module",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Adhese implementation for NextJS getServerSideProps.",
   "main": "adhese.js",
   "scripts": {
