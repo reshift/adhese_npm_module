@@ -62,7 +62,7 @@ async function getAdheseAds(context, config) {
   var userSync = getUserSyncMarkup(config);
   adheseProps = Object.assign(adheseProps, { ['user_sync_iframe']: userSync });
   
-  const res = await fetch('https://ads-' + config.account + '.adhese.com/json/', requestOptions)
+  const res = await fetch('https://content1.' + config.account + '/json/', requestOptions)
   const data = await res.json()
   const vastPathRegex = /:\/\/(?:www\.)?.[^/]+\/(.*)/;
 
